@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  bridge-TD6:
+    driver: bridge
+
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo:4.4
+    ports:
+      - 27017:27017
+    networks:
+      - bridge-TD6
+    volumes:
+      - ./data:/data/db
+  
+  flask:
+    build: .
+    ports:
+      - 5000:5000
+    container_name: flaskapp
+    networks:
+      - bridge-TD6
+    volumes:
+      - type: bind
+        source: ./file.txt
+        target: /app/src/file.txt
+    depends_on:
+      - mongodb
